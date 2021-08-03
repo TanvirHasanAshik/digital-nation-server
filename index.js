@@ -17,6 +17,7 @@ client.connect(err => {
   const businessesCollection = client.db(process.env.DB_NAME).collection("businesses");
   const userRecommendedCollection = client.db(process.env.DB_NAME).collection("userRecommended");
   const messageCollection = client.db(process.env.DB_NAME).collection("message");
+  const blogCollection = client.db(process.env.DB_NAME).collection("blog");
 
   app.post('/businesses', (req, res) => {
     businessesCollection.insertOne(req.body)
@@ -73,12 +74,24 @@ client.connect(err => {
     .then(result => {
       res.send(result);
     })
-  })
+  });
 
+  app.post('/blog', (req, res)=>{
+    blogCollection.insertOne(req.body)
+    .then(result => {
+      res.send(result.insertCounted > 0);
+    })
+  });
+
+  app.get('/blogData', (req, res)=>{
+    blogCollection.find({})
+    .toArray((err, docs) => {
+      res.send(docs);
+    })
+  });
+
+  
 });
-
- 
-
 
 
 app.get('/', function (req, res) {
