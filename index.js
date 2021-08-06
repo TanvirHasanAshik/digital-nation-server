@@ -18,6 +18,7 @@ client.connect(err => {
   const userRecommendedCollection = client.db(process.env.DB_NAME).collection("userRecommended");
   const messageCollection = client.db(process.env.DB_NAME).collection("message");
   const blogCollection = client.db(process.env.DB_NAME).collection("blog");
+  const portfolioCollection = client.db(process.env.DB_NAME).collection("portfolio");
 
   app.post('/businesses', (req, res) => {
     businessesCollection.insertOne(req.body)
@@ -89,7 +90,20 @@ client.connect(err => {
       res.send(docs);
     })
   });
-
+  
+  app.post('/addPortfolio', (req, res)=>{
+    portfolioCollection.insertOne(req.body)
+    .then(result=> {
+      res.send(result.insertCounted > 0)
+    })
+  });
+  
+  app.get('/portfolioData', (req, res)=>{
+    portfolioCollection.find({})
+    .toArray((err, docs) => {
+      res.send(docs)
+    })
+  });
   
 });
 
